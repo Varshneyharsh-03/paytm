@@ -127,7 +127,7 @@ async function updateHandler(req, res) {
   });
 }
 
-router.put("/", authmiddleware, updateHandler);
+router.put("/update", authmiddleware, updateHandler);
 
 router.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
@@ -141,9 +141,8 @@ router.get("/bulk", async (req, res) => {
 
   return res.status(200).json({
     user: users.map((u) => ({
-      username: u.username,
-      firstName: u.firstName,
-      lastName: u.lastName,
+      firstname: u.firstname,
+      lastname: u.lastname,
       _id: u._id,
     })),
   });
