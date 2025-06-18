@@ -6,7 +6,7 @@ const zod = require("zod");
 const { JWT_SECRET } = require("../config");
 const authmiddleware = require("../middleware");
 
-const { User } = require("../db");
+const { User, Account } = require("../db");
 
 const signupBody = zod.object({
   username: zod.string().email(),
@@ -42,6 +42,11 @@ router.post("/signup", async (req, res) => {
   });
 
   const userId = user._id;
+
+  await Account.create({
+    userId: user._id,
+    balance: 1 + Math.random() * 10000,
+  });
 
   const token = jwt.sign(
     {
