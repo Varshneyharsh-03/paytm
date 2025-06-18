@@ -13,5 +13,17 @@ const authmiddleware = (req, res, next) => {
   const token = authHeader.spilt(" ")[1];
 
   try {
-  } catch (error) {}
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    return res.status(403).json({
+      msg: "internal server error",
+    });
+  } finally {
+  }
+};
+
+module.exports = {
+  authmiddleware,
 };
