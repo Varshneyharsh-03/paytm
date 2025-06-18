@@ -53,7 +53,10 @@ router.post("/transfer", authmiddleware, async (req, res) => {
     return res.status(200).json({
       msg: "Transaction Successfull",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in Transaction: ");
+    console.log(error);
+  }
 });
 
 module.exports = {

@@ -110,15 +110,17 @@ const updateBody = zod.object({
 });
 
 router.put("/", authmiddleware, async (req, res) => {
-  const success = updateBody.parse(req.body);
-
-  if (!success) {
+  try {
+    updateBody.parse(req.body); // throws if invalid
+  } catch (error) {
     return res.status(411).json({
       msg: "Error while updating information",
+      error: error.errors, // optional: include Zod error details
     });
   }
 
   const user = await User.updateOne({ _id: req.userId }, req.body);
+
   return res.status(200).json({
     user,
     msg: "User details updated successfully",
