@@ -14,7 +14,7 @@ mongoose
   .then(() => console.log(" MongoDB connected successfully"))
   .catch((err) => console.error(" MongoDB connection error:", err));
 
-app.use("api/v1", rootRouter.router);
+app.use("api/v1", rootRouter);
 const port = 3000;
 
 app.listen(port, () => {

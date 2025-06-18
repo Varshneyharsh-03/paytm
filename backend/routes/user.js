@@ -16,8 +16,8 @@ const signupBody = zod.object({
 });
 
 router.post("/signup", async (req, res) => {
-  const success = signupBody.parse(req.body);
-  if (!success) {
+  const success = signupBody.safeParse(req.body);
+  if (!success.success) {
     return res.status(411).json({
       msg: "invalid input / user already exists",
     });
@@ -67,9 +67,9 @@ const signinBody = zod.object({
 });
 
 router.post("/signin", async (req, res) => {
-  const success = signinBody.parse(req.body);
+  const success = signinBody.safeParse(req.body);
 
-  if (!success) {
+  if (!success.success) {
     return res.status(411).json({
       msg: "Error while logging in",
     });
@@ -109,9 +109,9 @@ const updateBody = zod.object({
   lastname: zod.string(),
 });
 
-router.put("/", authmiddleware, async (req, res) => {
+async function updateHandler(req, res) {
   try {
-    updateBody.parse(req.body); // throws if invalid
+    updateBody.safeParse(req.body); // throws if invalid
   } catch (error) {
     return res.status(411).json({
       msg: "Error while updating information",
@@ -125,15 +125,17 @@ router.put("/", authmiddleware, async (req, res) => {
     user,
     msg: "User details updated successfully",
   });
-});
+}
+
+router.put("/", authmiddleware, updateHandler);
 
 router.get("/bulk", async (req, res) => {
   const filter = req.query.filter || "";
 
   const users = await User.find({
     $or: [
-      { firstName: { $regex: filter, $options: "i" } },
-      { lastName: { $regex: filter, $options: "i" } },
+      { firstname: { $regex: filter, $options: "i" } },
+      { lastname: { $regex: filter, $options: "i" } },
     ],
   });
 
@@ -147,6 +149,4 @@ router.get("/bulk", async (req, res) => {
   });
 });
 
-module.exports = {
-  router,
-};
+module.exports = router;
